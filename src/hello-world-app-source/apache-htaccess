@@ -1,0 +1,20 @@
+# html5 pushstate (history) support:
+<ifModule mod_rewrite.c>
+    RewriteEngine On
+
+    # the final correct redirect
+    RewriteEngine on
+    RewriteCond %{HTTP:X-Forwarded-Proto} ^http$
+    RewriteRule .* https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !index
+    RewriteRule (.*) index.html [L,QSA]
+</ifModule>
+
+
+<IfModule mod_headers.c>
+   Header add Access-Control-Allow-Origin: *
+</IfModule>

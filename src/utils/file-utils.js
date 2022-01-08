@@ -66,4 +66,4 @@ const validateFileDirectory = (value)=>{
 }
 
 
-export {getLocalFileDirectory, validateFileDirectory, onSaveSpyneFileToDir}
+export {getLocalFileDirectory, validateFileDirectory, onSaveSpyneFileToDir, checkIfFileExists}

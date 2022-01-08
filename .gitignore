@@ -14,6 +14,8 @@ examples-enquirer/*
 .idea
 admin
 index-cli.js
+index-bash.sh
+
 
 src/app/*
 !src/app/channels/.gitkeep
