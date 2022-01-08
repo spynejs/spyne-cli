@@ -10,21 +10,20 @@ let _appDirectory;
 let _errorMsg;
 
 
-const _spyneAppSrcPath =  path.resolve('/usr/local/lib/node_modules/spynecli', 'src/hello-world-app-source');
 
 
 import {packageDirectory} from 'pkg-dir';
+const globalPath = "/usr/local/lib/node_modules/spyne-cli"
+const _spyneAppSrcRelPath = '/src/hello-world-app-source';
+let _spyneAppSrcPath = path.resolve(globalPath, _spyneAppSrcRelPath);
 
 
-
-const fn = async()=> {
-  const loc = await pkgUp();
-  const loc2 = await packageDirectory();
-
-  console.log('XXXXXX up ',{loc, loc2});
+const getSpyneSrcPath = async()=> {
+  const localPath = await packageDirectory();
+  const mainPath = localPath || globalPath;
+  _spyneAppSrcPath = path.resolve(mainPath, 'src/hello-world-app-source');
 }
 
-fn();
 
 export default class SpyneAppCreator {
 
@@ -35,7 +34,6 @@ export default class SpyneAppCreator {
     _createAppBool = createAppBool;
     _folderName = folderName;
 
-    console.log('craete app bool ',path.resolve('./'), {_folderPath, _spyneAppSrcPath});
 
     this.checkForErrors =   SpyneAppCreator.checkForErrors.bind(this);
     this.generateResponse = SpyneAppCreator.generateResponse.bind(this);
@@ -45,15 +43,21 @@ export default class SpyneAppCreator {
   }
 
 
-  static generateResponse(){
+  static async generateResponse(){
+     try{
+       await getSpyneSrcPath();
+     } catch(e){
+       console.log('getting src path err ',e);
+     }
     _errorMsg = this.checkForErrors();
+    //console.log("SPYNE PATHS ",{_createAppBool, _spyneAppSrcPath})
     return _errorMsg ? console.log(_errorMsg) : this.copyDirAndReturnResponse();
   }
 
 
 
   static copyDirAndReturnResponse(appDir=_appDirectory){
-   // copyDirSync(_spyneAppSrcPath, appDir);
+    copyDirSync(_spyneAppSrcPath, appDir);
     console.log(SpyneAppCreator.successColors(`spyne at created at ${appDir}`));
   }
 

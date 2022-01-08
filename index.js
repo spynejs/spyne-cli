@@ -7,15 +7,8 @@ const args = process.argv;
 import path from 'path';
 
 
-console.log("PATH START ",path.resolve('./'));
-
 let spyneAppCreator = new SpyneAppCreator(args);
 const {createAppBool} = spyneAppCreator;
-
-
-console.log('method string is ',{createAppBool})
-
-spyneAppCreator.generateResponse();
 
 const startPromptFn = async()=>{
   clear();
@@ -24,5 +17,9 @@ const startPromptFn = async()=>{
   await spyneFilePrompt.startPrompt();
 }
 
-//startPromptFn();
+if (createAppBool){
+  spyneAppCreator.generateResponse();
+} else {
+  startPromptFn();
+}
 
