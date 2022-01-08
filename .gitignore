@@ -13,6 +13,7 @@ examples-enquirer/*
 *.DS_Store
 .idea
 admin
+index-cli.js
 
 src/app/*
 !src/app/channels/.gitkeep
