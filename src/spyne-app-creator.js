@@ -1,13 +1,31 @@
 import fs from 'fs';
 import path from 'path';
 import c from 'ansi-colors';
-import {checkIfFileExists} from './utils/file-utils.js';
+import {checkIfFolderExists, copyDirSync} from './utils/file-utils.js';
 
 let _createAppBool = false;
 let _folderName;
-let _folderPath = path.resolve('./');
+let _folderPath = path.resolve();
 let _appDirectory;
 let _errorMsg;
+
+
+const _spyneAppSrcPath =  path.resolve('/usr/local/lib/node_modules/spynecli', 'src/hello-world-app-source');
+
+
+import {packageDirectory} from 'pkg-dir';
+
+
+
+const fn = async()=> {
+  const loc = await pkgUp();
+  const loc2 = await packageDirectory();
+
+  console.log('XXXXXX up ',{loc, loc2});
+}
+
+fn();
+
 export default class SpyneAppCreator {
 
   constructor(args=[]) {
@@ -17,46 +35,64 @@ export default class SpyneAppCreator {
     _createAppBool = createAppBool;
     _folderName = folderName;
 
-    console.log('craete app bool ',_createAppBool);
+    console.log('craete app bool ',path.resolve('./'), {_folderPath, _spyneAppSrcPath});
 
     this.checkForErrors =   SpyneAppCreator.checkForErrors.bind(this);
     this.generateResponse = SpyneAppCreator.generateResponse.bind(this);
+    this.copyDirAndReturnResponse = SpyneAppCreator.copyDirAndReturnResponse.bind(this);
 
+
+  }
+
+
+  static generateResponse(){
     _errorMsg = this.checkForErrors();
+    return _errorMsg ? console.log(_errorMsg) : this.copyDirAndReturnResponse();
+  }
 
+
+
+  static copyDirAndReturnResponse(appDir=_appDirectory){
+   // copyDirSync(_spyneAppSrcPath, appDir);
+    console.log(SpyneAppCreator.successColors(`spyne at created at ${appDir}`));
+  }
+
+
+  static successColors(successStr="XXXX"){
+    return c.blueBright(successStr);
   }
 
   static errorColors(errorStr="XXXX"){
     return c.greenBright(errorStr);
   }
 
-  static checkForErrors(folderName=_folderName, folderPath=_folderPath){
+  static checkForErrors(folderPath=_folderPath, folderName=_folderName){
 
     let folderNameIsMissing = folderName === undefined;
 
     if (folderNameIsMissing){
-      return SpyneAppCreator.errorColors("Please a folder name");
+      return SpyneAppCreator.errorColors("Please add a folder name!");
     }
 
-    _appDirectory = folderPath+folderName;
+    _appDirectory =  `${folderPath}/${folderName}`;
 
+    let pathAlreadyExistsBool = SpyneAppCreator.checkIfDirectoryExists(_appDirectory);
 
+    if (pathAlreadyExistsBool){
+      return SpyneAppCreator.errorColors('App folder already exists!');
+    }
 
+    //console.log('app directory is ',{_appDirectory, pathAlreadyExistsBool})
 
 
     return undefined;
 
   }
 
-  static checkIfDirectoryExists(appDir){
-    return checkIfFileExists(_appDirectory);;
+  static checkIfDirectoryExists(appDir=""){
+    return checkIfFolderExists(appDir);;
   }
 
-  static generateResponse(){
-
-
-
-  }
 
 
 

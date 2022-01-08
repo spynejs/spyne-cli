@@ -5,10 +5,11 @@ import {AnswersData} from '../mocks/answers.js';
 const {answersArr} = AnswersData;
 import R from 'ramda';
 import fs from 'fs';
+import path from 'path';
 
 
 
-import {onSaveSpyneFileToDir} from '../../src/utils/file-utils.js';
+import {onSaveSpyneFileToDir, copyDirSync, removeDir} from '../../src/utils/file-utils.js';
 
 
 const getAnswersByFileType = (fileType) => R.compose(R.head, R.filter(R.propEq('fileType', fileType)))(answersArr)
@@ -66,5 +67,20 @@ describe('should test saving to file', () => {
     expect(fileExists).to.be.true;
 
   });
+
+  it('should copy a folder recursively', ()=>{
+    const folder = 'h-world-new';
+
+    const appPath = path.resolve('./src');
+    const appSrc = `${appPath}/hello-world-app-source`
+    const appDest = `${appPath}/${folder}`
+
+
+    removeDir(appDest);
+    const copiedFiles = copyDirSync(appSrc, appDest);
+    expect(copiedFiles).to.be.true;
+
+  });
+
 
 });

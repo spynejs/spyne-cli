@@ -6,16 +6,16 @@ import SpyneFilePrompt from './src/spyne-file-prompt.js';
 const args = process.argv;
 import path from 'path';
 
-console.log("ARGS ",{args}, path.resolve('./'))
 
-const methodStr =  args.length>=3 ? args[2] : 'empty';
-const folderName = args.length>=4 ? args[3] : undefined;
+console.log("PATH START ",path.resolve('./'));
 
-const createAppPrompt = methodStr === "create-app";
-new SpyneAppCreator(args);
+let spyneAppCreator = new SpyneAppCreator(args);
+const {createAppBool} = spyneAppCreator;
 
-console.log('method string is ',{createAppPrompt,methodStr})
 
+console.log('method string is ',{createAppBool})
+
+spyneAppCreator.generateResponse();
 
 const startPromptFn = async()=>{
   clear();

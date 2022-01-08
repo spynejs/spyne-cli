@@ -32,7 +32,10 @@
     "clear": "^0.1.0",
     "enquirer": "^2.3.6",
     "figlet": "^1.5.2",
-    "json-stringify-safe": "^5.0.1"
+    "json-stringify-safe": "^5.0.1",
+    "pkg-dir": "^6.0.1",
+    "pkg-up": "^4.0.0",
+    "read-pkg": "^7.0.0"
   },
   "devDependencies": {
     "chai": "^4.3.4",
