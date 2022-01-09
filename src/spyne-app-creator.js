@@ -1,4 +1,3 @@
-import fs from 'fs';
 import path from 'path';
 import c from 'ansi-colors';
 import {checkIfFolderExists, copyDirSync} from './utils/file-utils.js';
@@ -50,7 +49,6 @@ export default class SpyneAppCreator {
        console.log('getting src path err ',e);
      }
     _errorMsg = this.checkForErrors();
-    //console.log("SPYNE PATHS ",{_createAppBool, _spyneAppSrcPath})
     return _errorMsg ? console.log(_errorMsg) : this.copyDirAndReturnResponse();
   }
 
@@ -86,9 +84,6 @@ export default class SpyneAppCreator {
       return SpyneAppCreator.errorColors('App folder already exists!');
     }
 
-    //console.log('app directory is ',{_appDirectory, pathAlreadyExistsBool})
-
-
     return undefined;
 
   }
@@ -96,11 +91,6 @@ export default class SpyneAppCreator {
   static checkIfDirectoryExists(appDir=""){
     return checkIfFolderExists(appDir);;
   }
-
-
-
-
-
 
 
 

@@ -4,7 +4,6 @@ import clear from 'clear';
 import SpyneAppCreator from './src/spyne-app-creator.js';
 import SpyneFilePrompt from './src/spyne-file-prompt.js';
 const args = process.argv;
-import path from 'path';
 
 
 let spyneAppCreator = new SpyneAppCreator(args);

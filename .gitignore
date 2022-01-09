@@ -15,7 +15,7 @@ examples-enquirer/*
 admin
 index-cli.js
 index-bash.sh
-
+src/h-world-new/*
 
 src/app/*
 !src/app/channels/.gitkeep
