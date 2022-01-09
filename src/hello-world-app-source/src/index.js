@@ -9,7 +9,7 @@ const config = {
 SpyneApp.init(config);
 
 if (process.env.NODE_ENV === 'development') {
-  const {SpynePluginConsole} = require('@franciscobatista/spyne-plugin-console-tmp');
+  const {SpynePluginConsole} = require('spyne-plugin-console');
   new SpynePluginConsole({position: ['bottom', 'right'], minimize: true});
 }
 

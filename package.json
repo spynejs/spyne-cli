@@ -4,13 +4,11 @@
     "spyne-cli": "index.js"
   },
   "type": "module",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Generates spyne objects and saves them to standard spyne.",
   "main": "index.js",
   "scripts": {
     "debug": "nodemon --no-stdin index.js",
-    "resetApp": "node ./index-cli resetAppDir",
-    "resetAll": "npm run resetApp && clear && npm start",
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

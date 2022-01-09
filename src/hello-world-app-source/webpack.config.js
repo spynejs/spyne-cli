@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const _defaultAssetsDirName = "assets";
-const port = 8002;
+const port = 8062;
 
 let mode;
 let _isProduction;
@@ -142,10 +142,11 @@ module.exports = (env={mode:"development"})=> {
 
 const getWebpackPlugins = ()=> {
 
-  const miniCssPlugin = new MiniCssExtractPlugin({
-    filename: `${_assetsFolder}/css/main.css`
-  });
-
+  const miniCssPlugin = ()=> {
+    return new MiniCssExtractPlugin({
+      filename: `${_assetsFolder}/css/main.css`
+    });
+  }
 
   const definePlugin = new webpack.DefinePlugin({
     "IMG_PATH": JSON.stringify(_imgPath),
