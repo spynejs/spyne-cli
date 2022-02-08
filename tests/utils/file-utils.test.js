@@ -3,7 +3,7 @@ const {expect, assert} = chai;
 import {MockData} from '../mocks/enquirer-data.js';
 import {AnswersData} from '../mocks/answers.js';
 const {answersArr} = AnswersData;
-import R from 'ramda';
+import * as R  from 'ramda';
 import fs from 'fs';
 import path from 'path';
 

@@ -13,7 +13,7 @@ import enquirer from 'enquirer';
 const {prompt, Select} = enquirer;
 
 import c from 'ansi-colors';
-import R  from 'ramda';
+import * as R  from 'ramda';
 import {getLocalFileDirectory, validateFileDirectory} from '../utils/file-utils.js';
 import changeCase from 'change-case';
 

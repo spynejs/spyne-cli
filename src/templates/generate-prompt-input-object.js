@@ -4,7 +4,7 @@ import PromptInputField from './generate-prompt-input-fields.js';
 
 import enquirer from 'enquirer';
 const {prompt} = enquirer;
-import R from 'ramda';
+import * as R  from 'ramda';
 import fs from 'fs';
 import color from 'ansi-colors';
 

@@ -7,7 +7,7 @@ import stringify from 'json-stringify-safe';
 import path from 'path';
 import fs from 'fs';
 import c from 'ansi-colors';
-import R  from 'ramda';;
+import * as R  from 'ramda';
 
 
 const checkIfFileExists = (fileLoc) => fs.existsSync(fileLoc)

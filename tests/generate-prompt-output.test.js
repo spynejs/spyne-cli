@@ -4,7 +4,7 @@ import {MockData} from './mocks/enquirer-data.js';
 import {AnswersData} from './mocks/answers.js';
 const {answersArr} = AnswersData;
 import {generatePromptOutput} from '../src/templates/generate-prompt-output.js';
-import R from 'ramda';
+import * as R  from 'ramda';
 
 const getAnswersByFileType = (fileType) => R.compose(R.head, R.filter(R.propEq('fileType', fileType)))(answersArr)
 

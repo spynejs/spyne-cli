@@ -1,4 +1,4 @@
-import R from 'ramda';
+import * as R  from 'ramda';
 import boxen from 'boxen';
 import colors from 'ansi-colors';
 colors.alias('comment', colors.white);
