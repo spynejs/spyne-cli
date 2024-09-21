@@ -97,7 +97,7 @@ export default class SpyneAppCreator {
   static checkArgs(args){
     const methodStr =  args.length>=3 ? args[2] : false;
     const folderName = args.length>=4 ? args[3] : undefined;
-    const createAppBool = methodStr === "create-app";
+    const createAppBool =  ["create-app", "new", "create", "generate"].includes(methodStr);
 
     return {folderName, createAppBool};
 
