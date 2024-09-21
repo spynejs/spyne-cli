@@ -9,9 +9,11 @@ colors.alias('files', colors.green);
 let _answers;
 let _savedProps;
 let _fileStr;
-
+let _channelHasRegistered = false;
 
 const createChannelRegisterSnippet = () => {
+
+
   const {fileName, className, fileDirectory, channelName} = _answers;
 
   const filePath = fileDirectory+fileName;
@@ -71,17 +73,25 @@ const outputMessage = ()=>{
 
   let messageOutput = '';
 
-  const defaultStr = colors.bgBlue(colors.black("File saved successfully."));
+  const defaultStr = colors.bgBlue(colors.black(`Successfully saved the ${fileType} file.`));
+
+  const checkForChannelRegisteredMsg = ()=>{
+    if (_channelHasRegistered === true){
+       return colors.bgBlue(colors.black(`Channel registered and file saved successfully.`));
+    }
+    return `${defaultStr}\n${createChannelRegisterSnippet()}`;
+  }
+
   const messageHash = {
 
-    "ViewStream" : defaultStr,
-    "DomElement" : defaultStr,
-    "SpyneTrait" : defaultStr,
-    "Channel"    : `${defaultStr}\n${createChannelRegisterSnippet()}`
+    "ViewStream" : ()=>defaultStr,
+    "DomElement" : ()=>defaultStr,
+    "SpyneTrait" : ()=>defaultStr,
+    "Channel"    : checkForChannelRegisteredMsg
   }
 
   if (fileHasSaved){
-    messageOutput = messageHash[fileType];
+    messageOutput = messageHash[fileType]();
   } else {
 
     messageOutput = outputFailedMessage();
@@ -94,11 +104,12 @@ const outputMessage = ()=>{
 
 
 
-const generatePromptOutput = (answers={}, savedProps={}, fileStr='')=>{
+const generatePromptOutput = (answers={}, savedProps={}, fileStr='', channelHasRegistered=false)=>{
 
   _answers = answers;
   _savedProps = savedProps;
   _fileStr = fileStr;
+  _channelHasRegistered = channelHasRegistered;
 
 
   return outputMessage();

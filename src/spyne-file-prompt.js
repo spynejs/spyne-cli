@@ -7,6 +7,7 @@ import GeneratePromptInputObject from './templates/generate-prompt-input-object.
 import GenerateFileString from './templates/generate-file-string.js';
 import {onSaveSpyneFileToDir} from './utils/file-utils.js';
 import {generatePromptOutput} from './templates/generate-prompt-output.js';
+import {addChannelToIndexJS} from './utils/add-channel-to-index-file.js';
 
 export default class SpyneFilePrompt {
 
@@ -37,10 +38,23 @@ export default class SpyneFilePrompt {
   }
 
   saveFileAndSendOutput(answers) {
-    const {fileType, fileName, fileDirectory} = answers;
+    const {fileType, fileName, fileDirectory, className} = answers;
     const {fileString} = new GenerateFileString(fileType, answers);
     const savedProps = onSaveSpyneFileToDir(fileString, fileName, fileDirectory);
-    const msgOutput = generatePromptOutput(answers, savedProps, fileString);
+
+    // default is no channel to be registered, yet
+    let channelHasRegistered = false;
+
+    if (fileType === 'Channel'){
+      const savedChannelToIndexProps = addChannelToIndexJS(className, fileName);
+
+      // check if channel has been registered
+      channelHasRegistered = savedChannelToIndexProps.fileHasSaved;
+    }
+
+    const msgOutput = generatePromptOutput(answers, savedProps, fileString, channelHasRegistered);
+
+
     console.log(msgOutput);
   }
 
