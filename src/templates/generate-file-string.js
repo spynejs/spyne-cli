@@ -9,12 +9,12 @@ export class ${props.className} extends ViewStream {
     }
     
     addActionListeners() {
-        // return nexted array(s)
+        // return nested array(s)
         return [];
     }
     
     broadcastEvents() {
-        // return nexted array(s)
+        // return nested array(s)
         return [];
     }
    

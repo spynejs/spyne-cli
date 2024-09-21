@@ -65,6 +65,8 @@ const getLocalFileDirectory = (_fileType)=>{
     ErrorLogger.log(e, 'getFileDirectory')
   }
 
+  console.log("DIR PATH ",dirPath);
+
   return dirPath;
 
 }

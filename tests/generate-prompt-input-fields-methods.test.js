@@ -95,7 +95,7 @@ describe('should create all necessary prompt input initial, hint and validate fi
 
     it('it should generate initial value for directory based on app path', ()=>{
       let inputType = 'fileDirectory';
-      const initialViewStreamFileDir = new PromptInputField(inputType,  fileType,     'initial').field;
+      const initialViewStreamFileDir = new PromptInputField(inputType,  fileType,      'initial').field;
       const initialDomElementFileDir = new PromptInputField(inputType, 'DomElement',  'initial').field;
       const initialChannelFileDir =    new PromptInputField(inputType, 'Channel',     'initial').field;
       const initialSpyneTraitFileDir = new PromptInputField(inputType, 'SpyneTrait',  'initial').field;
@@ -107,6 +107,7 @@ describe('should create all necessary prompt input initial, hint and validate fi
 
 
       //console.log('process ',{initialFileDir})
+
       expect(initialViewStreamFileDir).to.equal('./src/app/components/')
       expect(initialDomElementFileDir).to.equal('./src/app/components/')
       expect(initialChannelFileDir).to.equal('./src/app/channels/')
