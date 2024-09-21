@@ -1,7 +1,7 @@
 import chai from 'chai';
 const {expect, assert} = chai;
 import PromptInputField from '../src/templates/generate-prompt-input-fields.js';
-import changeCase from 'change-case';
+import * as changeCase from "change-case";
 
 const {
   camelCase,

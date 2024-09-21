@@ -5,7 +5,7 @@ export class SpyneCliUI {
 
   constructor() {}
   static title(){
-    const figletTxt = figlet.textSync('spyne-cli', {
+    const figletTxt = figlet.textSync('spyne-cli 5.0', {
       horizontalLayout: 'universal smushing'
     })
     const chalkOutput = chalk.blue(figletTxt);

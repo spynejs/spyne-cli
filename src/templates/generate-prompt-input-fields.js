@@ -15,7 +15,8 @@ const {prompt, Select} = enquirer;
 import c from 'ansi-colors';
 import * as R  from 'ramda';
 import {getLocalFileDirectory, validateFileDirectory} from '../utils/file-utils.js';
-import changeCase from 'change-case';
+import * as changeCase from "change-case";
+
 
 const {
   camelCase,

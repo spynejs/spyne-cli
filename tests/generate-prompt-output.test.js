@@ -6,7 +6,7 @@ const {answersArr} = AnswersData;
 import {generatePromptOutput} from '../src/templates/generate-prompt-output.js';
 import * as R  from 'ramda';
 
-const getAnswersByFileType = (fileType) => R.compose(R.head, R.filter(R.propEq('fileType', fileType)))(answersArr)
+const getAnswersByFileType = (fileType) => R.compose(R.head, R.filter(R.propEq(fileType, 'fileType')))(answersArr)
 
 const defaultStr = `
 import {Subject} from 'rxjs';

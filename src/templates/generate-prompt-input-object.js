@@ -38,7 +38,7 @@ export default class GeneratePromptInputObject{
   }
 
   static getPromptObjSettings(){
-   return R.compose(R.head, R.filter(R.propEq('inputType', _inputType)))(promptTypes);
+   return R.compose(R.head, R.filter(R.propEq(_inputType, 'inputType')))(promptTypes);
   }
 
 }
