@@ -4,6 +4,8 @@ import c from 'ansi-colors';
 import { exec } from 'child_process';
 import fs from 'fs-extra';
 import path from 'path';
+import ora from 'ora';
+import cliCursor from 'cli-cursor';
 
 class SpyneAppCreator {
   constructor(args) {
@@ -63,6 +65,9 @@ class SpyneAppCreator {
     console.log(c.green(`\nCreating a new Spyne app in ${c.cyan(appPath)} using the "${c.cyan(templateName)}" template...\n`));
 
     try {
+      // Hide the cursor
+      cliCursor.hide();
+
       // Clone the repository
       await this.cloneRepository(repoUrl, appFolder);
 
@@ -86,6 +91,9 @@ class SpyneAppCreator {
       this.printSuccessMessage(appFolder, appPath, skipInstall);
     } catch (error) {
       console.error(c.red(`\nError: ${error.message}`));
+    } finally {
+      // Show the cursor again
+      cliCursor.show();
     }
   }
 
@@ -101,33 +109,38 @@ class SpyneAppCreator {
     return templates[templateName];
   }
 
-  // Method to clone the repository
+  // Method to clone the repository with spinner
   cloneRepository(repoUrl, appFolder) {
     return new Promise((resolve, reject) => {
+      const spinner = ora(c.green('Cloning repository...')).start();
+
       exec(`git clone --depth=1 ${repoUrl} ${appFolder}`, (error) => {
         if (error) {
+          spinner.fail(c.red('Failed to clone repository.'));
           reject(new Error(`Failed to clone repository: ${error.message}`));
         } else {
-          console.log(c.green('✔ Repository cloned successfully.'));
+          spinner.succeed(c.green('Repository cloned successfully.'));
           resolve();
         }
       });
     });
   }
 
-  // Method to initialize a new Git repository
+  // Method to initialize a new Git repository with spinner
   initGitRepo(appFolder) {
     return new Promise((resolve) => {
+      const spinner = ora(c.green('Initializing Git repository...')).start();
+
       exec('git --version', (gitError) => {
         if (gitError) {
-          console.warn(c.yellow('⚠ Git is not installed. Skipping Git initialization.'));
+          spinner.warn(c.yellow('Git is not installed. Skipping Git initialization.'));
           resolve();
         } else {
           exec('git init', { cwd: appFolder }, (initError) => {
             if (initError) {
-              console.warn(c.yellow('⚠ Failed to initialize Git repository.'));
+              spinner.fail(c.red('Failed to initialize Git repository.'));
             } else {
-              console.log(c.green('✔ Git repository initialized.'));
+              spinner.succeed(c.green('Git repository initialized.'));
             }
             resolve();
           });
@@ -136,36 +149,42 @@ class SpyneAppCreator {
     });
   }
 
-  // Method to install dependencies
+  // Method to install dependencies with spinner
   installDependencies(appFolder) {
-    return new Promise((resolve, reject) => {
-      console.log(c.green('\nInstalling dependencies...\n'));
+    return new Promise((resolve) => {
+      const spinner = ora(c.green('Installing dependencies...')).start();
+
       exec('npm install', { cwd: appFolder }, (installError) => {
         if (installError) {
-          console.warn(c.yellow('⚠ Failed to install dependencies.'));
+          spinner.fail(c.red('Failed to install dependencies.'));
           resolve(); // Proceed even if installation fails
         } else {
-          console.log(c.green('✔ Dependencies installed successfully.'));
+          spinner.succeed(c.green('Dependencies installed successfully.'));
           resolve();
         }
       });
     });
   }
 
-  // Method to update package.json
+  // Method to update package.json with spinner
   updatePackageJson(appFolder) {
     return new Promise((resolve, reject) => {
+      const spinner = ora(c.green('Updating package.json...')).start();
       const pkgPath = path.join(appFolder, 'package.json');
+
       fs.readJson(pkgPath)
       .then((pkg) => {
         pkg.name = path.basename(appFolder);
         return fs.writeJson(pkgPath, pkg, { spaces: 2 });
       })
       .then(() => {
-        console.log(c.green('✔ package.json updated.'));
+        spinner.succeed(c.green('package.json updated.'));
         resolve();
       })
-      .catch((err) => reject(new Error(`Failed to update package.json: ${err.message}`)));
+      .catch((err) => {
+        spinner.fail(c.red('Failed to update package.json.'));
+        reject(new Error(`Failed to update package.json: ${err.message}`));
+      });
     });
   }
 
