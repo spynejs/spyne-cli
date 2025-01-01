@@ -73,11 +73,11 @@ const outputMessage = ()=>{
 
   let messageOutput = '';
 
-  const defaultStr = colors.bgBlue(colors.black(`Successfully saved the ${fileType} file.`));
+  const defaultStr = colors.bgYellow(colors.black(`Successfully saved the ${fileType} file.`));
 
   const checkForChannelRegisteredMsg = ()=>{
     if (_channelHasRegistered === true){
-       return colors.bgBlue(colors.black(`Channel registered and file saved successfully.`));
+       return colors.bgYellow(colors.black(`Channel registered and file saved successfully.`));
     }
     return `${defaultStr}\n${createChannelRegisterSnippet()}`;
   }
