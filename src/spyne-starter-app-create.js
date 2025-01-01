@@ -72,5 +72,5 @@ export async function createNewApp(appName) {
   console.log(`\n${c.greenBright('Success!')}`);
   console.log(c.cyan(`Created ${c.bold(appName)} at ${targetDir}\n`));
   console.log(c.greenBright('Next steps:'));
-  console.log(c.bgGreen(c.black(`  cd ${appName} && npm start`)));
+  console.log(c.bgCyan(c.black(`  cd ${appName} && npm start`)));
 }
