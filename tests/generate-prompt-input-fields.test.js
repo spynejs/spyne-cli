@@ -1,6 +1,4 @@
-import chai from 'chai';
-const {expect, assert} = chai;
-import PromptInputField from '../src/templates/generate-prompt-input-fields.js';
+import {expect, assert} from 'chai';import PromptInputField from '../src/templates/generate-prompt-input-fields.js';
 
 import {MockData} from './mocks/enquirer-data.js';
 

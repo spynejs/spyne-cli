@@ -1,6 +1,4 @@
-import chai from 'chai';
-const {expect, assert} = chai;
-import {MockData} from '../mocks/enquirer-data.js';
+import {expect, assert} from 'chai';import {MockData} from '../mocks/enquirer-data.js';
 import {AnswersData} from '../mocks/answers.js';
 const {answersArr} = AnswersData;
 import * as R  from 'ramda';
@@ -12,7 +10,7 @@ import path from 'path';
 import {onSaveSpyneFileToDir, copyDirSync, removeDir} from '../../src/utils/file-utils.js';
 
 
-const getAnswersByFileType = (fileType) => R.compose(R.head, R.filter(R.propEq('fileType', fileType)))(answersArr)
+const getAnswersByFileType = (fileType) => R.compose(R.head, R.filter(R.propEq(fileType, 'fileType')))(answersArr)
 
 const defaultStr = `
 import {Subject} from 'rxjs';

@@ -1,6 +1,4 @@
-import chai from 'chai';
-const {expect, assert} = chai;
-import GeneratePromptInputObject from '../src/templates/generate-prompt-input-object.js';
+import {expect, assert} from 'chai';import GeneratePromptInputObject from '../src/templates/generate-prompt-input-object.js';
 import {Data} from '../src/spyne-template-prompts.js';
 import {MockData} from './mocks/enquirer-data.js';
 const {promptTypes} = Data;

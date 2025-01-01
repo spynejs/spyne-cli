@@ -1,5 +1,4 @@
-import chai from 'chai';
-const {expect} = chai;
+import {expect} from 'chai';
 import path from 'path';
 
 import SpyneAppCreator from '../src/spyne-app-creator.js';

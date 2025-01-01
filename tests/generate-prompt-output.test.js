@@ -1,6 +1,4 @@
-import chai from 'chai';
-const {expect, assert} = chai;
-import {MockData} from './mocks/enquirer-data.js';
+import {expect, assert} from 'chai';import {MockData} from './mocks/enquirer-data.js';
 import {AnswersData} from './mocks/answers.js';
 const {answersArr} = AnswersData;
 import {generatePromptOutput} from '../src/templates/generate-prompt-output.js';

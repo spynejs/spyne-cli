@@ -1,30 +1,31 @@
 #!/usr/bin/env node
-import  {SpyneCliUI} from './src/ui.js';
+
+import { SpyneCliUI } from './src/ui.js';
 import clear from 'clear';
-import SpyneAppCreator from './src/spyne-app-creator.js';
-import SpyneAppCreate from './src/spyne-app-create.js';
+import { createNewApp } from './src/spyne-starter-app-create.js';
 import SpyneFilePrompt from './src/spyne-file-prompt.js';
-const args = process.argv;
 
+const command = process.argv[2];
+const appName = process.argv[3];
 
-//let spyneAppCreator = new SpyneAppCreator(args);
-//const {createAppBool} = spyneAppCreator;
-
-
-let spyneAppCreator = new SpyneAppCreate(process.argv.slice(2));
-const {createAppBool} = spyneAppCreator;
-
-const startPromptFn = async()=>{
+const startPromptFn = async () => {
   clear();
   SpyneCliUI.title();
   const spyneFilePrompt = new SpyneFilePrompt();
   await spyneFilePrompt.startPrompt();
-}
+};
 
-if (createAppBool){
-  //spyneAppCreator.generateResponse();
-  spyneAppCreator.createApp();
+if (command === 'new' && appName) {
+  // We can use an immediately-invoked async function
+  // OR top-level await if your Node version supports it.
+  (async () => {
+    try {
+      await createNewApp(appName);
+    } catch (err) {
+      console.error('Failed to create new application:', err.message);
+      process.exit(1);
+    }
+  })();
 } else {
   startPromptFn();
 }
-

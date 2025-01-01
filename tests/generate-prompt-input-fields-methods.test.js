@@ -1,6 +1,4 @@
-import chai from 'chai';
-const {expect, assert} = chai;
-import PromptInputField from '../src/templates/generate-prompt-input-fields.js';
+import {expect, assert} from 'chai';import PromptInputField from '../src/templates/generate-prompt-input-fields.js';
 import * as changeCase from "change-case";
 
 const {

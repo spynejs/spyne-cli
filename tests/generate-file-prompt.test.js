@@ -1,7 +1,5 @@
 import SpyneFilePrompt from '../src/spyne-file-prompt.js';
-import chai from 'chai';
-const {expect, assert} = chai;
-
+import {expect, assert} from 'chai';
 
 
 describe('should test spyne file prompt', () => {

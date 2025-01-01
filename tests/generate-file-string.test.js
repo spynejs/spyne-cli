@@ -1,6 +1,4 @@
-import chai from 'chai';
-const {expect, assert} = chai;
-import GenerateFileString from '../src/templates/generate-file-string.js';
+import {expect, assert} from 'chai';import GenerateFileString from '../src/templates/generate-file-string.js';
 
 describe('should test file string generator', () => {
 
