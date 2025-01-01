@@ -17,6 +17,8 @@ index-cli.js
 index-bash.sh
 src/h-world-new/*
 
+my-app-*/
+
 src/app/*
 !src/app/channels/.gitkeep
 !src/app/channels/channel-custom.js
