@@ -45,7 +45,12 @@ export async function createNewApp(appName) {
   }).start();
 
   try {
-    await git.clone(repoUrl, targetDir, ['--depth=1']);
+    await git.clone(repoUrl, targetDir, [
+      '--branch=main',
+      '--single-branch',
+      '--depth=1'
+    ]);
+
     spinner.succeed(c.greenBright('Starter App cloned successfully!'));
   } catch (err) {
     spinner.fail(c.red(`Failed to clone the repository: ${err.message}`));
