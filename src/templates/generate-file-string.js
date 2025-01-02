@@ -1,96 +1,70 @@
 const _viewStreamTemplate = (props)=> {
- return `import {ViewStream} from 'spyne';
+ return `import { ViewStream } from 'spyne';
 
 export class ${props.className} extends ViewStream {
-    
-    constructor(props={}) {
-        
-        super(props);
-    }
-    
-    addActionListeners() {
-        // return nested array(s)
-        return [];
-    }
-    
-    broadcastEvents() {
-        // return nested array(s)
-        return [];
-    }
-   
-    onRendered() {
-    
-    }
-    
-}
+  constructor(props = {}) {
+    super(props);
+  }
 
+  addActionListeners() {
+    return [];
+  }
+
+  broadcastEvents() {
+    return [];
+  }
+
+  onRendered() {}
+}
 `
 }
 
 const _domElementTemplate = (props) => {
-  return `import {DomElement} from 'spyne';
-  
+  return `import { DomElement } from 'spyne';
+
 export class ${props.className} extends DomElement {
-  
-  constructor(props={}) {
-        
+  constructor(props = {}) {
     super(props);
   }
-  
 }
-
 `
 }
 
 
 const _channelTemplate = (props)=> {
-  return `import {Subject} from 'rxjs';
-import {Channel} from 'spyne';
+  return `import { Channel } from 'spyne';
 
-export class ${props.className} extends Channel{
-
-  constructor(name, props={}) {
-    name="${props.channelName}";
+export class ${props.className} extends Channel {
+  constructor(name, props = {}) {
+    name = '${props.channelName}';
     props.sendCachedPayload = ${props.replayLastPayload};
-    
     super(name, props);
   }
 
-  onRegistered(){
-    
-  }
+  onRegistered() {}
 
   addRegisteredActions() {
-    
     return [];
   }
 
-  onViewStreamInfo(obj) {
-    let data = obj.props();
-  }
-  
+  onViewStreamInfo() {}
 }
-
 `
 }
 
 const _spyneTraitTemplate = (props)=>{
-  return `import {SpyneTrait} from 'spyne';
+  return `import { SpyneTrait } from 'spyne';
 
 export class ${props.className} extends SpyneTrait {
-
-  constructor(context){
-    let traitPrefix = "${props.methodPrefix}";
-    
+  constructor(context) {
+    let traitPrefix = '${props.methodPrefix}';
     super(context, traitPrefix);
   }
-  
-  static ${props.methodPrefix}HelloWorld(){
-    return "Hello World";
-  }
-  
-}
 
+  static ${props.methodPrefix}HelloWorld() {
+    return 'Hello World';
+  }
+}
 `
 }
 

@@ -8,6 +8,7 @@ import GenerateFileString from './templates/generate-file-string.js';
 import {onSaveSpyneFileToDir} from './utils/file-utils.js';
 import {generatePromptOutput} from './templates/generate-prompt-output.js';
 import {addChannelToIndexJS} from './utils/add-channel-to-index-file.js';
+import {insertChannelStrings} from './utils/insert-channel-strings-to-index-file.js';
 
 export default class SpyneFilePrompt {
 
@@ -46,7 +47,8 @@ export default class SpyneFilePrompt {
     let channelHasRegistered = false;
 
     if (fileType === 'Channel'){
-      const savedChannelToIndexProps = addChannelToIndexJS(className, fileName);
+      //const savedChannelToIndexProps = addChannelToIndexJS(className, fileName);
+      const savedChannelToIndexProps = insertChannelStrings(className, fileName);
 
       // check if channel has been registered
       channelHasRegistered = savedChannelToIndexProps.fileHasSaved;
