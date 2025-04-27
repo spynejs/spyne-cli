@@ -4,7 +4,7 @@
     "spyne-cli": "index.js"
   },
   "type": "module",
-  "version": "0.6.2",
+  "version": "0.6.4",
   "description": "Generates spyne objects and saves them to standard spyne.",
   "main": "index.js",
   "scripts": {

@@ -8,6 +8,9 @@ import SpyneFilePrompt from './src/spyne-file-prompt.js';
 const command = process.argv[2];
 const appName = process.argv[3];
 
+// Simple check if user included "-spa" or "--spa" anywhere in the process.argv
+const isSPA = process.argv.includes('-spa') || process.argv.includes('--spa');
+
 const startPromptFn = async () => {
   clear();
   SpyneCliUI.title();
@@ -16,11 +19,10 @@ const startPromptFn = async () => {
 };
 
 if (command === 'new' && appName) {
-  // We can use an immediately-invoked async function
-  // OR top-level await if your Node version supports it.
   (async () => {
     try {
-      await createNewApp(appName);
+      // Pass the isSPA boolean to createNewApp
+      await createNewApp(appName, isSPA);
     } catch (err) {
       console.error('Failed to create new application:', err.message);
       process.exit(1);
