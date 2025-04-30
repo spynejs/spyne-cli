@@ -16,7 +16,7 @@ To install the `spyne-cli`, you need to have Node.js and npm installed on your s
 1. Install the package globally:
 
    ```bash
-   npm install -g @spynejs/spyne-cli
+   npm install -g spyne-plugin-console
    ```
 
 ## Usage
