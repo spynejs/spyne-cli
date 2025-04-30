@@ -19,7 +19,6 @@ To install the `spyne-cli`, you need to have Node.js and npm installed on your s
    npm install -g @spynejs/spyne-cli
    ```
 
-
 ## Usage
 
 ### Creating a New SpyneJS Application
@@ -100,6 +99,3 @@ Contributions are welcome! Please feel free to submit a Pull Request or open an 
 ## License
 
 This project is licensed under the MIT License.
-```
-
-You can now paste this content directly into your `README.md` file. Let me know if you need further assistance!
