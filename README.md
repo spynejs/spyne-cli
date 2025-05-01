@@ -26,7 +26,7 @@ To install the `spyne-cli`, you need to have Node.js and npm installed on your s
 To create a new SpyneJS application, run:
 
 ```bash
-npx spyne-cli create-app <app-name>
+npx spyne-cli new <app-name>
 ```
 
 This will generate the necessary project files in the specified `<app-name>` directory.
@@ -60,13 +60,13 @@ To create a new application and add a `ViewStream` component:
 1. Create a new application:
 
    ```bash
-   npx spyne-cli create-app my-spyne-app
+   npx spyne-cli new my-spyne-app
    ```
 
-2. Navigate to the application directory:
+2. Navigate to and start the application:
 
    ```bash
-   cd my-spyne-app
+   cd my-spyne-app && npm start
    ```
 
 3. Generate a `ViewStream` component:
@@ -74,23 +74,6 @@ To create a new application and add a `ViewStream` component:
    ```bash
    npx spyne-cli generate viewstream MyView
    ```
-
-## Configuration
-
-The `spyne-cli` supports customization via the `spyne.config.js` file located in your project’s root directory. You can modify the config file to control the file structure, template generation, and more.
-
-### Example `spyne.config.js`
-
-```javascript
-module.exports = {
-  templates: {
-    viewstream: './templates/viewstream.hbs',
-    channel: './templates/channel.hbs',
-    spynetrait: './templates/spynetrait.hbs',
-  },
-  outputDir: './src/components',
-};
-```
 
 ## Contributing
 
