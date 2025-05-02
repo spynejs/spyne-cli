@@ -63,10 +63,10 @@ This interface is ideal for developers who want fast, zero-config scaffolding du
 npx spyne-cli new my-spyne-app
 ```
 
-2. Navigate to the project:
+2. Navigate to the project and start the application:
 
 ```bash
-cd my-spyne-app
+cd my-spyne-app && npm start
 ```
 
 3. Run the interactive generator:
