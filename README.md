@@ -1,11 +1,12 @@
+
 # Spyne CLI
 
-`spyne-cli` is a command-line utility designed to streamline the process of generating and managing applications built using the [SpyneJS](https://github.com/spynejs/spynejs) framework. It simplifies the creation of `ViewStream`, `Channel`, and `SpyneTrait` classes, making it easier to build scalable and modular single-page applications.
+`spyne-cli` is a command-line utility designed to streamline the process of generating and managing applications built using the [SpyneJS](https://github.com/spynejs/spynejs) framework. It simplifies the creation of `ViewStream`, `DomElement`, `Channel`, and `SpyneTrait` classes, making it easier to build scalable and modular single-page applications.
 
 ## Features
 
 - Create a new SpyneJS application with a single command.
-- Generate `ViewStream`, `Channel`, and `SpyneTrait` classes based on user prompts.
+- Generate `ViewStream`, `DomElement`, `Channel`, and `SpyneTrait` classes via interactive prompts.
 - Easily extend and customize applications.
 - Built-in support for channel-driven development.
 
@@ -29,51 +30,52 @@ To create a new SpyneJS application, run:
 npx spyne-cli new <app-name>
 ```
 
-This will generate the necessary project files in the specified `<app-name>` directory.
+This will generate a fully structured SpyneJS SPA in the specified `<app-name>` directory.
 
-### Generating Components
+---
 
-You can use `spyne-cli` to generate new `ViewStream`, `Channel`, and `SpyneTrait` components:
+### Generating Components (Interactive CLI)
 
-- **ViewStream**: To generate a new `ViewStream`, use:
+To generate SpyneJS components, simply run:
 
-  ```bash
-  npx spyne-cli generate viewstream <view-name>
-  ```
+```bash
+npx spyne-cli
+```
 
-- **Channel**: To generate a new `Channel`, use:
+You’ll be presented with an interactive menu where you can select the file type:
 
-  ```bash
-  npx spyne-cli generate channel <channel-name>
-  ```
+- `ViewStream`
+- `DomElement`
+- `Channel`
+- `SpyneTrait`
 
-- **SpyneTrait**: To generate a new `SpyneTrait`, use:
+Use the arrow keys to make a selection, and follow the prompts to name and configure your file.
 
-  ```bash
-  npx spyne-cli generate spynetrait <trait-name>
-  ```
+This interface is ideal for developers who want fast, zero-config scaffolding during development.
 
-### Example
+---
 
-To create a new application and add a `ViewStream` component:
+### Example Workflow
 
 1. Create a new application:
 
-   ```bash
-   npx spyne-cli new my-spyne-app
-   ```
+```bash
+npx spyne-cli new my-spyne-app
+```
 
-2. Navigate to and start the application:
+2. Navigate to the project:
 
-   ```bash
-   cd my-spyne-app && npm start
-   ```
+```bash
+cd my-spyne-app
+```
 
-3. Generate a `ViewStream` component:
+3. Run the interactive generator:
 
-   ```bash
-   npx spyne-cli generate viewstream MyView
-   ```
+```bash
+npx spyne-cli
+```
+
+4. Select the file type (e.g., `ViewStream`), and follow the prompts to generate a new component.
 
 ## Contributing
 
