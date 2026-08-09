@@ -67,17 +67,16 @@ describe('should test saving to file', () => {
   });
 
   it('should copy a folder recursively', ()=>{
-    const folder = 'h-world-new';
+    const appSrc = path.resolve('./src/templates');
+    const appDest = path.resolve('./src/app/copy-target');
 
-    const appPath = path.resolve('./src');
-    const appSrc = `${appPath}/hello-world-app-source`
-    const appDest = `${appPath}/${folder}`
+    if (fs.existsSync(appDest)) removeDir(appDest);
+    const copiedFiles = copyDirSync(appSrc, appDest);
 
+    expect(copiedFiles).to.be.true;
+    expect(fs.existsSync(path.join(appDest, 'generate-file-string.js'))).to.be.true;
 
     removeDir(appDest);
-    const copiedFiles = copyDirSync(appSrc, appDest);
-    expect(copiedFiles).to.be.true;
-
   });
 
 

@@ -174,7 +174,7 @@ const generateMesage = () => {
   const defaultMsgFn = messageColor(`Enter the ${_fileType} file name`);
 
   const inputTypeHash = {
-    selectFileType: messageColor(`Select file type`),
+    selectFileType: messageColor(`What would you like to create?`),
     fileName: defaultMsgFn,
     className: messageColor(`Enter the ${_fileType} class name`),
     fileDirectory: messageColor(`Enter where you would like to save the ${_fileType} file`),

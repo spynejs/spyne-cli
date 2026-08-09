@@ -4,9 +4,31 @@
     "spyne-cli": "index.js"
   },
   "type": "module",
-  "version": "0.6.8",
+  "version": "0.7.0",
   "description": "Generates spyne objects and saves them to standard spyne.",
-  "main": "index.js",
+  "main": "src/registry.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "index.js",
+    "src/cli/",
+    "src/core/",
+    "src/templates/",
+    "src/utils/",
+    "src/registry.js",
+    "src/spyne-file-prompt.js",
+    "src/spyne-template-prompts.js",
+    "src/ui.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": "./src/registry.js",
+    "./registry": "./src/registry.js",
+    "./core/create-app": "./src/core/create-app.js",
+    "./core/generate-module": "./src/core/generate-module.js"
+  },
   "scripts": {
     "debug": "nodemon --no-stdin index.js",
     "start": "node index.js",
@@ -30,13 +52,9 @@
     "clear": "^0.1.0",
     "enquirer": "^2.4.1",
     "figlet": "^1.8.0",
-    "fs-extra": "^11.2.0",
     "json-stringify-safe": "^5.0.1",
     "ora": "^8.1.1",
-    "package-up": "^5.0.0",
-    "pkg-dir": "^8.0.0",
     "ramda": "^0.30.1",
-    "read-pkg": "^9.0.1",
     "recast": "^0.23.9",
     "simple-git": "^3.27.0"
   },

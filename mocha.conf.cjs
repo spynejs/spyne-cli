@@ -4,10 +4,9 @@ module.exports = {
   // Look for test files in the `tests` folder
   spec: 'tests/**/*.test.js',
 
-  exclude: [
-      'tests/create-spyne-app-test.js'
+  // Creates the ./src/app fixture tree the generator writes into.
+  require: ['./tests/root-hooks.js'],
 
-  ],
   // You can also specify mocha options here
   extension: ['js'],       // The file extensions Mocha should look for
   ui: 'bdd',               // BDD-style (describe/it)

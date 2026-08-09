@@ -1,14 +1,25 @@
 import enquirer from 'enquirer';
 const {prompt, Select} = enquirer;
+import c from 'ansi-colors';
 
 import {Data} from './spyne-template-prompts.js';
 const {promptInputHash} = Data;
 import GeneratePromptInputObject from './templates/generate-prompt-input-object.js';
-import GenerateFileString from './templates/generate-file-string.js';
-import {onSaveSpyneFileToDir} from './utils/file-utils.js';
-import {generatePromptOutput} from './templates/generate-prompt-output.js';
-import {addChannelToIndexJS} from './utils/add-channel-to-index-file.js';
-import {insertChannelStrings} from './utils/insert-channel-strings-to-index-file.js';
+import {appCommands, moduleCommands} from './registry.js';
+import {generateModule} from './core/generate-module.js';
+import {createApp, detectSpyneProject} from './core/create-app.js';
+import {
+  appNamePrompt,
+  createProgressReporter,
+  renderAppResult,
+  renderError,
+  renderModuleResult,
+  selectSizing,
+  templatePrompt,
+} from './cli/render.js';
+
+// Picker labels come from the registry, so command messaging has one home.
+const APP_LABELS = new Set(appCommands.map((cmd) => cmd.pickerLabel));
 
 export default class SpyneFilePrompt {
 
@@ -32,48 +43,84 @@ export default class SpyneFilePrompt {
     return props.map(mapInputTypesToPrompObj);
   }
 
+  /**
+   * The picker is a renderer over the registry: App first, then every module
+   * command in registry order.
+   */
   getSelectPromptObj() {
     const promptGen = new GeneratePromptInputObject('selectFileType');
-    return promptGen.getPrompObject();
+    const promptObj = promptGen.getPrompObject();
 
+    promptObj.choices = [
+      ...appCommands.map((cmd) => ({
+        name: cmd.pickerLabel,
+        message: c.greenBright(cmd.pickerLabel),
+        hint: c.dim(`— ${cmd.summary}`),
+      })),
+      ...moduleCommands.map((cmd) => c.greenBright(cmd.pickerLabel)),
+    ];
+
+    Object.assign(promptObj, selectSizing(promptObj.choices.length));
+
+    return promptObj;
   }
 
-  saveFileAndSendOutput(answers) {
-    const {fileType, fileName, fileDirectory, className} = answers;
-    const {fileString} = new GenerateFileString(fileType, answers);
-    const savedProps = onSaveSpyneFileToDir(fileString, fileName, fileDirectory);
+  async saveFileAndSendOutput(answers) {
+    const result = await generateModule(answers);
 
-    // default is no channel to be registered, yet
-    let channelHasRegistered = false;
-
-    if (fileType === 'Channel'){
-      //const savedChannelToIndexProps = addChannelToIndexJS(className, fileName);
-      const savedChannelToIndexProps = insertChannelStrings(className, fileName);
-
-      // check if channel has been registered
-      channelHasRegistered = savedChannelToIndexProps.fileHasSaved;
+    if (!result.ok && result.error.code === 'NOT_IN_SPYNE_PROJECT') {
+      console.log(renderError(result.error));
+      process.exitCode = 1;
+      return result;
     }
 
-    const msgOutput = generatePromptOutput(answers, savedProps, fileString, channelHasRegistered);
+    console.log(renderModuleResult(result));
+    if (!result.ok) process.exitCode = 1;
+    return result;
+  }
 
+  async runAppPrompt() {
+    const {isSpyneProject, root} = detectSpyneProject();
 
-    console.log(msgOutput);
+    if (isSpyneProject) {
+      const {proceed} = await prompt({
+        type: 'confirm',
+        name: 'proceed',
+        initial: false,
+        message: c.yellow(
+            `This creates a new app inside an existing SpyneJS project (${root}) — continue?`),
+      });
+      if (!proceed) return undefined;
+    }
+
+    // Template first: the general choice before the specific one.
+    const answers = await prompt([templatePrompt(), appNamePrompt()]);
+
+    const result = await createApp({
+      ...answers,
+      onProgress: createProgressReporter(),
+    });
+
+    console.log(result.ok
+        ? renderAppResult(result)
+        : renderError(result.error));
+
+    if (!result.ok) process.exitCode = 1;
+    return result;
   }
 
   async startPrompt() {
-    const selectPromptObj = this.getSelectPromptObj();
-    //console.log('select prompt obj is ',selectPromptObj);
-    const selectPrompt = new Select(selectPromptObj);
-    const onSelectComplete = async (fileType) => {
-      const filePromptArr = SpyneFilePrompt.getFilePrompt(fileType);
-      //console.log("promp arr is ",filePromptArr);
-      const filePrompt = await prompt(filePromptArr);
-      const answersObj = Object.assign({}, filePrompt, {fileType});
-      this.saveFileAndSendOutput(answersObj);
-    };
+    const selectPrompt = new Select(this.getSelectPromptObj());
+    const selection = await selectPrompt.run();
 
-    selectPrompt.run().then(onSelectComplete);
+    if (APP_LABELS.has(selection)) {
+      return this.runAppPrompt();
+    }
 
+    const filePromptArr = SpyneFilePrompt.getFilePrompt(selection);
+    const filePrompt = await prompt(filePromptArr);
+    return this.saveFileAndSendOutput(
+        Object.assign({}, filePrompt, {fileType: selection}));
   }
 
 };
