@@ -34,7 +34,9 @@ export const renderAppResult = (result) => {
     '',
     c.greenBright('Success!'),
     `Created ${c.bold(result.appName)} at ${result.path}`,
-    `Template: ${result.template}`,
+    result.generated
+        ? `Template: ${result.template} (AI-generated, app id ${result.appId})`
+        : `Template: ${result.template}`,
     '',
     'Next steps:',
     ...result.nextSteps.map((step) => `  ${c.cyan(step)}`),
@@ -86,6 +88,18 @@ export const appNamePrompt = () => ({
   initial: 'my-spyne-app',
   validate: (value) => String(value).trim().length > 0 ||
       'An app name is required.',
+});
+
+// The default follow-up when the shell template is chosen: describing the
+// site routes scaffolding through the AI generator; Enter on an empty line
+// keeps the blank shell clone.
+export const sitePromptPrompt = () => ({
+  type: 'input',
+  name: 'prompt',
+  message: c.blueBright(
+      'Describe your site — AI generates its pages and content ' +
+      '(Enter to skip for the blank shell)'),
+  initial: '',
 });
 
 export const createProgressReporter = () => {

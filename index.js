@@ -16,6 +16,7 @@ import {
   renderError,
   renderHelp,
   renderModuleResult,
+  sitePromptPrompt,
   templatePrompt,
 } from './src/cli/render.js';
 
@@ -127,6 +128,13 @@ async function resolveAppArgs() {
   // Template first: the general choice before the specific one.
   if (!provided.has('template')) {
     ({template: args.template} = await prompt(templatePrompt()));
+  }
+
+  // Shell's default follow-up: a site description sends scaffolding through
+  // the AI generator; an empty answer keeps the blank shell.
+  if (args.template === 'shell' && !provided.has('prompt')) {
+    const {prompt: sitePrompt} = await prompt(sitePromptPrompt());
+    if (String(sitePrompt).trim()) args.prompt = sitePrompt;
   }
 
   if (!args.appName) {

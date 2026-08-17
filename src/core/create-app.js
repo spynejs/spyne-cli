@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import {spawn} from 'child_process';
 import simpleGit from 'simple-git';
+import {fetchGeneratedApp} from './generate-app.js';
 
 // Template keys mirror the distinguishing suffix of their repo names:
 // spynejs/application-starter and spynejs/application-shell.
@@ -163,26 +164,46 @@ export async function createApp(args = {}) {
     };
   }
 
-  const repo = repoFor(templateKey);
-
-  onProgress({step: 'clone', status: 'start', message: 'Cloning template...'});
-  try {
-    await simpleGit().clone(repo, targetDir,
-        ['--branch=main', '--single-branch', '--depth=1']);
-    onProgress({step: 'clone', status: 'success', message: 'Template cloned.'});
-  } catch (err) {
-    onProgress({step: 'clone', status: 'fail', message: 'Clone failed.'});
+  // A site description routes the shell template through the AI generator
+  // instead of a plain clone; everything after acquisition is shared.
+  const sitePrompt = args.prompt && String(args.prompt).trim();
+  if (sitePrompt && templateKey !== 'shell') {
     return {
       ok: false,
       error: {
-        code: 'CLONE_FAILED',
-        message: `Could not clone ${repo}: ${err.message}`,
+        code: 'PROMPT_UNSUPPORTED',
+        message: 'A site description generates from the shell template. ' +
+            'Use --template shell (or drop --prompt).',
       },
     };
   }
 
-  // No .git leakage from the template repo.
-  fs.rmSync(path.join(targetDir, '.git'), {recursive: true, force: true});
+  const repo = repoFor(templateKey);
+  let generated;
+
+  if (sitePrompt) {
+    generated = await fetchGeneratedApp({sitePrompt, targetDir, onProgress});
+    if (!generated.ok) return generated;
+  } else {
+    onProgress({step: 'clone', status: 'start', message: 'Cloning template...'});
+    try {
+      await simpleGit().clone(repo, targetDir,
+          ['--branch=main', '--single-branch', '--depth=1']);
+      onProgress({step: 'clone', status: 'success', message: 'Template cloned.'});
+    } catch (err) {
+      onProgress({step: 'clone', status: 'fail', message: 'Clone failed.'});
+      return {
+        ok: false,
+        error: {
+          code: 'CLONE_FAILED',
+          message: `Could not clone ${repo}: ${err.message}`,
+        },
+      };
+    }
+
+    // No .git leakage from the template repo.
+    fs.rmSync(path.join(targetDir, '.git'), {recursive: true, force: true});
+  }
 
   applyProjectIdentity(targetDir, appName);
 
@@ -220,13 +241,16 @@ export async function createApp(args = {}) {
     appName,
     path: targetDir,
     template: templateKey,
-    templateRepo: repo,
+    ...(generated
+        ? {generated: true, appId: generated.appId}
+        : {templateRepo: repo}),
     gitInitialized,
     dependenciesInstalled,
     nextSteps: [
       `cd ${appName}`,
       ...(dependenciesInstalled ? [] : ['npm install']),
       'npm start',
+      ...(generated ? ['see GETTING-STARTED.md for the CMS claim + AI editing'] : []),
     ],
   };
 }

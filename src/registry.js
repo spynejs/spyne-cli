@@ -59,6 +59,12 @@ export const commands = [
         default: DEFAULT_TEMPLATE,
         description: 'Template to scaffold from.',
       },
+      prompt: {
+        type: 'string',
+        alias: 'p',
+        description: 'Site description — AI generates pages, routes, content, ' +
+            'and images (shell template only).',
+      },
       install: {
         type: 'boolean',
         default: true,
