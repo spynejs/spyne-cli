@@ -4,7 +4,13 @@
     "spyne-cli": "index.js"
   },
   "type": "module",
-  "version": "0.7.0",
+  "version": "0.7.1",
+  "overrides": {
+    "mocha": {
+      "diff": "^8.0.3",
+      "serialize-javascript": "^7.0.5"
+    }
+  },
   "description": "Generates spyne objects and saves them to standard spyne.",
   "main": "src/registry.js",
   "engines": {
