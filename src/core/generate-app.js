@@ -12,7 +12,7 @@ import {unzipSync} from 'fflate';
  * the template-repo override pattern; read at call time.
  */
 export const DEFAULT_GENERATOR_URL =
-    'https://9v1stmpcxd.execute-api.us-east-1.amazonaws.com/prod/generate';
+    'https://ntvylgarzwinj3lcwtyctwlclu0ldpjp.lambda-url.us-east-1.on.aws/';
 
 export const generatorUrl = () =>
     process.env.SPYNE_CLI_GENERATOR_URL || DEFAULT_GENERATOR_URL;
