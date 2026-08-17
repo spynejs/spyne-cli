@@ -137,7 +137,7 @@ export const commands = [
 
 // `new` shipped in 0.6.x and stays working; create-app is canonical.
 export const aliases = {
-  new: {command: 'create-app', deprecated: true, since: '0.7.0'},
+  new: {command: 'create-app', deprecated: true, since: '0.7.1'},
 };
 
 /**
@@ -146,7 +146,7 @@ export const aliases = {
  */
 export const removedFlags = {
   spa: {
-    removedIn: '0.7.0',
+    removedIn: '0.7.1',
     message: '"--spa" has been removed. Pick a template with --template starter|shell.',
   },
 };
