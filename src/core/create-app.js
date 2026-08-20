@@ -250,7 +250,7 @@ export async function createApp(args = {}) {
       `cd ${appName}`,
       ...(dependenciesInstalled ? [] : ['npm install']),
       'npm start',
-      ...(generated ? ['see GETTING-STARTED.md for the CMS claim + AI editing'] : []),
+      ...(generated ? ['see GETTING-STARTED.md for the CMS + AI editing'] : []),
     ],
   };
 }
