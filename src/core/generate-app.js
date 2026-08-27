@@ -88,7 +88,13 @@ export async function fetchGeneratedApp({sitePrompt, targetDir, onProgress}) {
   try {
     res = await fetch(generatorUrl(), {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        // Private testing bypass for the anonymous quota (optional).
+        ...(process.env.SPYNE_CLI_GENERATOR_KEY
+            ? {'x-generation-key': process.env.SPYNE_CLI_GENERATOR_KEY}
+            : {}),
+      },
       body: JSON.stringify({prompt: sitePrompt}),
       signal: AbortSignal.timeout(120000),
     });
