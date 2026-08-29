@@ -10,17 +10,17 @@ import {fetchGeneratedApp} from './generate-app.js';
 // Template keys mirror the distinguishing suffix of their repo names:
 // spynejs/application-starter and spynejs/application-shell.
 export const TEMPLATES = {
-  starter: {
-    value: 'starter',
-    label: 'Application Starter',
-    description: 'minimal: app.js + a hello-world view',
-    repo: 'https://github.com/spynejs/application-starter.git',
-  },
   shell: {
     value: 'shell',
     label: 'Application Shell',
     description: 'pages, navigation, and UI components built in',
     repo: 'https://github.com/spynejs/application-shell.git',
+  },
+  starter: {
+    value: 'starter',
+    label: 'Application Starter',
+    description: 'minimal: app.js + a hello-world view',
+    repo: 'https://github.com/spynejs/application-starter.git',
   },
 };
 
@@ -31,7 +31,7 @@ const TEMPLATE_ALIASES = {
   'application-starter': 'starter',
 };
 
-export const DEFAULT_TEMPLATE = 'starter';
+export const DEFAULT_TEMPLATE = 'shell';
 
 export const resolveTemplate = (name) => {
   if (!name) return DEFAULT_TEMPLATE;

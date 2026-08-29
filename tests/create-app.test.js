@@ -177,9 +177,9 @@ describe('template picker choices', () => {
     });
   });
 
-  it('should offer both templates in the picker', () => {
+  it('should offer both templates in the picker, shell first', () => {
     expect(templateChoices().map((ch) => ch.name)).
-        to.eql(['starter', 'shell']);
+        to.eql(['shell', 'starter']);
   });
 
   it('should show a label and a description for each', () => {

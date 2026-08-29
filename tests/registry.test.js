@@ -142,7 +142,7 @@ describe('arg validation', () => {
 describe('templates', () => {
 
   it('should expose both ratified templates', () => {
-    expect(Object.keys(TEMPLATES)).to.eql(['starter', 'shell']);
+    expect(Object.keys(TEMPLATES)).to.eql(['shell', 'starter']);
   });
 
   it('should point at the spynejs org', () => {
@@ -155,8 +155,8 @@ describe('templates', () => {
     expect(resolveTemplate('app-shell')).to.equal('shell');
   });
 
-  it('should default to starter when unspecified', () => {
-    expect(resolveTemplate(undefined)).to.equal('starter');
+  it('should default to shell when unspecified', () => {
+    expect(resolveTemplate(undefined)).to.equal('shell');
   });
 
 });

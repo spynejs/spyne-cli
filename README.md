@@ -61,8 +61,8 @@ npx spyne-cli create-app my-app --template shell
 
 | Template | Contents |
 | --- | --- |
-| `starter` (default) | `app.js` and a hello-world view |
-| `shell` | pages, navigation, and UI components |
+| `shell` (default) | pages, navigation, and UI components |
+| `starter` | `app.js` and a hello-world view |
 
 Options: `-t, --template`, `--no-install` to skip dependency installation,
 `--no-git` to skip git initialisation.
