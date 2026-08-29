@@ -137,7 +137,7 @@ export const commands = [
 
 // `new` shipped in 0.6.x and stays working; create-app is canonical.
 export const aliases = {
-  new: {command: 'create-app', deprecated: true, since: '0.7.1'},
+  new: {command: 'create-app', deprecated: true, since: '0.7.2'},
 };
 
 /**
