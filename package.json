@@ -4,7 +4,7 @@
     "spyne-cli": "index.js"
   },
   "type": "module",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "overrides": {
     "mocha": {
       "diff": "^8.0.3",
@@ -36,7 +36,7 @@
     "./core/generate-module": "./src/core/generate-module.js"
   },
   "scripts": {
-    "debug": "nodemon --no-stdin index.js",
+    "debug": "node --watch index.js",
     "start": "node index.js",
     "test": "mocha --config mocha.conf.cjs"
   },
@@ -67,8 +67,7 @@
   },
   "devDependencies": {
     "chai": "^5.1.2",
-    "mocha": "^11.0.1",
-    "nodemon": "^3.1.9"
+    "mocha": "^11.0.1"
   },
   "directories": {
     "lib": "lib"

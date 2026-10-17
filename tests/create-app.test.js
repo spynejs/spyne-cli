@@ -104,10 +104,21 @@ describe('project detection', () => {
 });
 
 describe('template repo resolution', () => {
+  // Isolate from the ambient shell: a developer may export these overrides
+  // (e.g. to a private fork), and repoFor() honours them before the defaults.
+  const ENV_KEYS = ['SPYNE_CLI_STARTER_REPO', 'SPYNE_CLI_SHELL_REPO'];
+  let saved;
+
+  beforeEach(() => {
+    saved = Object.fromEntries(ENV_KEYS.map((k) => [k, process.env[k]]));
+    ENV_KEYS.forEach((k) => delete process.env[k]);
+  });
 
   afterEach(() => {
-    delete process.env.SPYNE_CLI_STARTER_REPO;
-    delete process.env.SPYNE_CLI_SHELL_REPO;
+    ENV_KEYS.forEach((k) => {
+      if (saved[k] === undefined) delete process.env[k];
+      else process.env[k] = saved[k];
+    });
   });
 
   it('should default to the ratified spynejs repos', () => {
