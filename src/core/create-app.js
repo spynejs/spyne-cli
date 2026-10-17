@@ -4,7 +4,7 @@
 import fs from 'fs';
 import path from 'path';
 import {spawn} from 'child_process';
-import simpleGit from 'simple-git';
+import { simpleGit } from 'simple-git';
 import {fetchGeneratedApp} from './generate-app.js';
 
 // Template keys mirror the distinguishing suffix of their repo names:
