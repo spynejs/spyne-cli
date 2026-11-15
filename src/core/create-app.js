@@ -242,7 +242,11 @@ export async function createApp(args = {}) {
     path: targetDir,
     template: templateKey,
     ...(generated
-        ? {generated: true, appId: generated.appId}
+        ? {
+          generated: true,
+          appId: generated.appId,
+          ...(generated.photos ? {photos: generated.photos} : {}),
+        }
         : {templateRepo: repo}),
     gitInitialized,
     dependenciesInstalled,

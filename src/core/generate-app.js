@@ -47,6 +47,35 @@ const errorFor = (status, body) => {
 };
 
 /**
+ * Summarise where the generated app's photographs came from, so renderers can
+ * credit the source. Counts only images that were actually resolved and
+ * shipped; returns null when there are none.
+ *
+ * Pexels asks API users to show a prominent "Photos provided by Pexels" link
+ * (https://www.pexels.com/api/documentation/#guidelines).
+ */
+export const PHOTO_PROVIDERS = {
+  pexels: {
+    name: 'Pexels',
+    url: 'https://www.pexels.com',
+    licenseUrl: 'https://www.pexels.com/license/',
+  },
+};
+
+export const summarizePhotos = (imageManifest) => {
+  if (!Array.isArray(imageManifest)) return null;
+  const shipped = imageManifest.filter((entry) =>
+      entry && entry.status === 'resolved' && PHOTO_PROVIDERS[entry.provider]);
+  if (!shipped.length) return null;
+  const provider = shipped[0].provider;
+  return {
+    provider,
+    ...PHOTO_PROVIDERS[provider],
+    count: shipped.filter((entry) => entry.provider === provider).length,
+  };
+};
+
+/**
  * Extract a generated package zip into targetDir, stripping the single
  * top-level directory the package wraps its files in. Entries that would
  * escape targetDir are rejected.
@@ -157,5 +186,10 @@ export async function fetchGeneratedApp({sitePrompt, targetDir, onProgress}) {
     };
   }
 
-  return {ok: true, appId: body.appId, claimToken: body.claimToken};
+  return {
+    ok: true,
+    appId: body.appId,
+    claimToken: body.claimToken,
+    photos: summarizePhotos(body.imageManifest),
+  };
 }

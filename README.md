@@ -67,6 +67,16 @@ npx spyne-cli create-app my-app --template shell
 Options: `-t, --template`, `--no-install` to skip dependency installation,
 `--no-git` to skip git initialisation.
 
+### Images in generated apps
+
+When you describe a site (`--prompt`), the generator finds matching photographs
+on [Pexels](https://www.pexels.com) and includes them as placeholders — the CLI
+prints "Photos provided by Pexels" when it does. Those photographs are under the
+[Pexels License](https://www.pexels.com/license/), not your app's license, and
+following it is your responsibility if you keep them. The generated app's
+`GETTING-STARTED.md`, `NOTICE.md`, and `image-manifest.json` cover the terms and
+per-photo credits.
+
 ### Generating modules
 
 Each module type is also a direct command, usable inside an existing project:

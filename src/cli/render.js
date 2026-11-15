@@ -37,11 +37,26 @@ export const renderAppResult = (result) => {
     result.generated
         ? `Template: ${result.template} (AI-generated, app id ${result.appId})`
         : `Template: ${result.template}`,
+    ...renderPhotoCredit(result.photos),
     '',
     'Next steps:',
     ...result.nextSteps.map((step) => `  ${c.cyan(step)}`),
   ];
   return lines.join('\n');
+};
+
+// Image-source credit for AI-generated apps. The photographs are placeholders
+// under the provider's own license, not the app's — say so where the developer
+// will see it.
+export const renderPhotoCredit = (photos) => {
+  if (!photos) return [];
+  return [
+    '',
+    `Photos provided by ${photos.name} (${photos.url})`,
+    c.dim(`  ${photos.count} placeholder ${photos.count === 1 ? 'photo' : 'photos'}` +
+        ` under the ${photos.name} License: ${photos.licenseUrl}`),
+    c.dim('  Yours to follow if you keep them — see "Your images" in GETTING-STARTED.md'),
+  ];
 };
 
 export const renderError = (error) => `${c.red('Error:')} ${error.message}`;

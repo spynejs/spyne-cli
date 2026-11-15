@@ -11,7 +11,13 @@ import {
   sanitizePackageName,
   TEMPLATES,
 } from '../src/core/create-app.js';
-import {selectSizing, templateChoices} from '../src/cli/render.js';
+import {summarizePhotos} from '../src/core/generate-app.js';
+import {
+  renderAppResult,
+  renderPhotoCredit,
+  selectSizing,
+  templateChoices,
+} from '../src/cli/render.js';
 
 const makeTempTemplate = () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'spyne-cli-test-'));
@@ -238,4 +244,49 @@ describe('createApp guards', () => {
     expect(result.error.code).to.equal('DIRECTORY_EXISTS');
   });
 
+});
+
+describe('generated photo credit', () => {
+
+  const manifest = [
+    {pageId: 'home', status: 'resolved', provider: 'pexels', file: 'imgs/pexels-1.jpeg'},
+    {pageId: 'shop', status: 'resolved', provider: 'pexels', file: 'imgs/pexels-2.jpeg'},
+    {pageId: 'about', status: 'fallback', file: 'imgs/placeholder-solid.svg'},
+  ];
+
+  it('should count only photos that were resolved and shipped', () => {
+    const photos = summarizePhotos(manifest);
+    expect(photos.provider).to.equal('pexels');
+    expect(photos.count).to.equal(2);
+    expect(photos.url).to.equal('https://www.pexels.com');
+    expect(photos.licenseUrl).to.equal('https://www.pexels.com/license/');
+  });
+
+  it('should report nothing when no photo was shipped', () => {
+    expect(summarizePhotos([{status: 'fallback'}, {status: 'deferred'}])).to.equal(null);
+    expect(summarizePhotos([])).to.equal(null);
+    expect(summarizePhotos(undefined)).to.equal(null);
+  });
+
+  it('should ignore providers it cannot credit', () => {
+    expect(summarizePhotos([{status: 'resolved', provider: 'mystery'}])).to.equal(null);
+  });
+
+  it('should print the provider credit and license link for a generated app', () => {
+    const output = renderAppResult({
+      appName: 'demo', path: '/tmp/demo', template: 'shell', generated: true,
+      appId: 'abc', photos: summarizePhotos(manifest), nextSteps: ['cd demo'],
+    });
+    expect(output).to.include('Photos provided by Pexels (https://www.pexels.com)');
+    expect(output).to.include('https://www.pexels.com/license/');
+    expect(output).to.include('GETTING-STARTED.md');
+  });
+
+  it('should print no credit when the app shipped no provider photos', () => {
+    expect(renderPhotoCredit(null)).to.eql([]);
+    const output = renderAppResult({
+      appName: 'demo', path: '/tmp/demo', template: 'shell', nextSteps: ['cd demo'],
+    });
+    expect(output).to.not.include('Pexels');
+  });
 });
