@@ -24,6 +24,20 @@ export const TEMPLATES = {
   },
 };
 
+/**
+ * Material Design is the shell template drawn with Google's Material Design 3:
+ * the same pages, navigation, and content keys, and the generator builds it
+ * from a site description as it builds the shell. So it is a choice within the
+ * shell template (`--material`), not a third template, and a site description
+ * works with it.
+ */
+export const MATERIAL = {
+  template: 'shell',
+  label: 'Material Design',
+  description: "based on Google's Material Design 3",
+  repo: 'https://github.com/spynejs/application-shell-material.git',
+};
+
 // Accepted silently; only the canonical values are documented.
 const TEMPLATE_ALIASES = {
   'app-shell': 'shell',
@@ -44,9 +58,14 @@ export const resolveTemplate = (name) => {
  * the templates are published — scaffold from somewhere else. Read at call
  * time so it is settable per invocation.
  *
- *   SPYNE_CLI_STARTER_REPO, SPYNE_CLI_SHELL_REPO
+ *   SPYNE_CLI_STARTER_REPO, SPYNE_CLI_SHELL_REPO, SPYNE_CLI_SHELL_MATERIAL_REPO
+ *
+ * `material` selects the shell template's Material Design repository.
  */
-export const repoFor = (templateKey) => {
+export const repoFor = (templateKey, {material = false} = {}) => {
+  if (material && templateKey === MATERIAL.template) {
+    return process.env.SPYNE_CLI_SHELL_MATERIAL_REPO || MATERIAL.repo;
+  }
   const envKey = `SPYNE_CLI_${templateKey.toUpperCase().replace(/-/g, '_')}_REPO`;
   return process.env[envKey] || TEMPLATES[templateKey].repo;
 };
@@ -120,6 +139,7 @@ export const detectSpyneProject = (startDir = process.cwd()) => {
  * @param {Object} args
  * @param {string} args.appName
  * @param {string} [args.template] 'starter' | 'shell'
+ * @param {boolean} [args.material] shell template in Material Design (default false)
  * @param {boolean} [args.install] install dependencies (default true)
  * @param {boolean} [args.git] initialise a fresh git repo (default true)
  * @param {Function} [args.onProgress] ({step, status, message}) => void
@@ -178,11 +198,24 @@ export async function createApp(args = {}) {
     };
   }
 
-  const repo = repoFor(templateKey);
+  const material = args.material === true;
+  if (material && templateKey !== MATERIAL.template) {
+    return {
+      ok: false,
+      error: {
+        code: 'MATERIAL_UNSUPPORTED',
+        message: 'Material Design is the shell template in another design. ' +
+            'Use --template shell (or drop --material).',
+      },
+    };
+  }
+
+  const repo = repoFor(templateKey, {material});
   let generated;
 
   if (sitePrompt) {
-    generated = await fetchGeneratedApp({sitePrompt, targetDir, onProgress});
+    generated = await fetchGeneratedApp(
+        {sitePrompt, targetDir, onProgress, material});
     if (!generated.ok) return generated;
   } else {
     onProgress({step: 'clone', status: 'start', message: 'Cloning template...'});
@@ -241,6 +274,7 @@ export async function createApp(args = {}) {
     appName,
     path: targetDir,
     template: templateKey,
+    ...(material ? {design: 'material'} : {}),
     ...(generated
         ? {
           generated: true,

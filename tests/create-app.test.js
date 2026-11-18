@@ -7,17 +7,25 @@ import {
   applyProjectIdentity,
   createApp,
   detectSpyneProject,
+  MATERIAL,
   repoFor,
   sanitizePackageName,
   TEMPLATES,
 } from '../src/core/create-app.js';
-import {summarizePhotos} from '../src/core/generate-app.js';
 import {
+  generatorRequestBody,
+  summarizePhotos,
+} from '../src/core/generate-app.js';
+import {parseArgs} from '../src/cli/args.js';
+import {
+  materialPrompt,
   renderAppResult,
+  renderCommandHelp,
   renderPhotoCredit,
   selectSizing,
   templateChoices,
 } from '../src/cli/render.js';
+import {getCommand} from '../src/registry.js';
 
 const makeTempTemplate = () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'spyne-cli-test-'));
@@ -289,4 +297,103 @@ describe('generated photo credit', () => {
     });
     expect(output).to.not.include('Pexels');
   });
+});
+
+describe('Material Design, the shell template in another design', () => {
+  // Same isolation as the template repos: a developer may export the override.
+  const ENV_KEYS = [
+    'SPYNE_CLI_STARTER_REPO',
+    'SPYNE_CLI_SHELL_REPO',
+    'SPYNE_CLI_SHELL_MATERIAL_REPO',
+  ];
+  let saved;
+
+  beforeEach(() => {
+    saved = Object.fromEntries(ENV_KEYS.map((k) => [k, process.env[k]]));
+    ENV_KEYS.forEach((k) => delete process.env[k]);
+  });
+
+  afterEach(() => {
+    ENV_KEYS.forEach((k) => {
+      if (saved[k] === undefined) delete process.env[k];
+      else process.env[k] = saved[k];
+    });
+  });
+
+  it('should clone the Material repo for the shell template when asked', () => {
+    expect(MATERIAL.repo).
+        to.equal('https://github.com/spynejs/application-shell-material.git');
+    expect(repoFor('shell', {material: true})).to.equal(MATERIAL.repo);
+  });
+
+  it('should leave the shell template alone when not asked', () => {
+    expect(repoFor('shell')).to.equal(TEMPLATES.shell.repo);
+    expect(repoFor('shell', {material: false})).to.equal(TEMPLATES.shell.repo);
+  });
+
+  it('should have an env override of its own, apart from the shell\'s', () => {
+    process.env.SPYNE_CLI_SHELL_MATERIAL_REPO = 'https://example.com/material.git';
+    process.env.SPYNE_CLI_SHELL_REPO = 'https://example.com/shell.git';
+    expect(repoFor('shell', {material: true})).
+        to.equal('https://example.com/material.git');
+    expect(repoFor('shell')).to.equal('https://example.com/shell.git');
+  });
+
+  it('should not exist for the starter template', async () => {
+    expect(repoFor('starter', {material: true})).
+        to.equal(TEMPLATES.starter.repo);
+
+    // Rejected before the network is touched.
+    const result = await createApp({
+      appName: `spyne-cli-test-no-such-dir-${Date.now()}`,
+      template: 'starter',
+      material: true,
+      install: false,
+      git: false,
+    });
+    expect(result.ok).to.equal(false);
+    expect(result.error.code).to.equal('MATERIAL_UNSUPPORTED');
+  });
+
+  it('should be a flag that is off unless given', () => {
+    const off = parseArgs(['create-app', 'my-app']);
+    expect(off.args.material).to.equal(false);
+    expect(off.provided.has('material')).to.equal(false);
+
+    const on = parseArgs(['create-app', 'my-app', '--material']);
+    expect(on.args.material).to.equal(true);
+    expect(on.provided.has('material')).to.equal(true);
+    expect(on.errors).to.eql([]);
+  });
+
+  it('should be asked as a yes or no question that defaults to no', () => {
+    const question = materialPrompt();
+    expect(question.type).to.equal('confirm');
+    expect(question.name).to.equal('material');
+    expect(question.initial).to.equal(false);
+    expect(question.message).to.contain('Use Material Design?');
+    expect(question.message).to.contain("based on Google's Material Design 3");
+  });
+
+  it('should be listed in the command help', () => {
+    expect(renderCommandHelp(getCommand('create-app'))).to.contain('--material');
+  });
+
+  it('should send the generator its design only when asked', () => {
+    // An app in the shell's own design sends what every earlier release sent.
+    expect(generatorRequestBody({sitePrompt: 'a bakery'})).
+        to.eql({prompt: 'a bakery'});
+    expect(generatorRequestBody({sitePrompt: 'a bakery', material: true})).
+        to.eql({prompt: 'a bakery', options: {design: 'material'}});
+  });
+
+  it('should say which design the app was created in', () => {
+    const base = {
+      appName: 'my-app', path: '/tmp/my-app', template: 'shell', nextSteps: [],
+    };
+    expect(renderAppResult({...base, design: 'material'})).
+        to.contain('Design: Material Design');
+    expect(renderAppResult(base)).to.not.contain('Design:');
+  });
+
 });

@@ -65,6 +65,12 @@ export const commands = [
         description: 'Site description — AI generates pages, routes, content, ' +
             'and images (shell template only).',
       },
+      material: {
+        type: 'boolean',
+        default: false,
+        description: "Use Material Design, based on Google's Material Design 3 " +
+            '(shell template only).',
+      },
       install: {
         type: 'boolean',
         default: true,

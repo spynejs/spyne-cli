@@ -64,8 +64,32 @@ npx spyne-cli create-app my-app --template shell
 | `shell` (default) | pages, navigation, and UI components |
 | `starter` | `app.js` and a hello-world view |
 
-Options: `-t, --template`, `--no-install` to skip dependency installation,
-`--no-git` to skip git initialisation.
+Options: `-t, --template`, `--material` for Material Design (below),
+`--no-install` to skip dependency installation, `--no-git` to skip git
+initialisation.
+
+### Material Design
+
+The `shell` template comes in a second design: Google's
+[Material Design 3](https://m3.material.io). It has the same pages, navigation,
+and content as the shell, drawn with Material's colours, type, shapes, motion,
+and components. See it at [material.spynejs.com](https://material.spynejs.com).
+
+When you choose `shell`, the CLI asks:
+
+```
+Use Material Design? (based on Google's Material Design 3)
+```
+
+Enter keeps the shell's own design. To answer without being asked:
+
+```bash
+npx spyne-cli create-app my-app --material
+```
+
+`--material` works with a site description (`--prompt`) too. It is the shell
+template in another design, so it is not offered for `starter`. The template is
+an independent implementation, and is not affiliated with or endorsed by Google.
 
 ### Images in generated apps
 
@@ -127,7 +151,8 @@ SPYNE_CLI_STARTER_REPO=https://github.com/you/your-starter.git \
 ```
 
 `SPYNE_CLI_STARTER_REPO` overrides the `starter` template;
-`SPYNE_CLI_SHELL_REPO` overrides `shell`.
+`SPYNE_CLI_SHELL_REPO` overrides `shell`;
+`SPYNE_CLI_SHELL_MATERIAL_REPO` overrides `shell` with `--material`.
 
 ### Deprecated and removed
 

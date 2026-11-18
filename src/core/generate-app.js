@@ -98,6 +98,16 @@ export const extractPackage = (zipBuffer, targetDir) => {
 };
 
 /**
+ * The generator's request body. The design rides in `options`, which the
+ * generator reads; a shell app in its own design sends the prompt alone, as
+ * every release before this one did.
+ */
+export const generatorRequestBody = ({sitePrompt, material = false}) => ({
+  prompt: sitePrompt,
+  ...(material ? {options: {design: 'material'}} : {}),
+});
+
+/**
  * Generate an application from a site description. Called by createApp once
  * appName/targetDir are validated; performs the network stages and extraction,
  * leaving identity, git, and install to the shared pipeline.
@@ -105,7 +115,8 @@ export const extractPackage = (zipBuffer, targetDir) => {
  * @returns {Promise<Object>} {ok, ...} — on success includes appId and
  *     claimToken so renderers can surface the CMS claim.
  */
-export async function fetchGeneratedApp({sitePrompt, targetDir, onProgress}) {
+export async function fetchGeneratedApp(
+    {sitePrompt, targetDir, onProgress, material = false}) {
   onProgress({
     step: 'generate',
     status: 'start',
@@ -124,7 +135,7 @@ export async function fetchGeneratedApp({sitePrompt, targetDir, onProgress}) {
             ? {'x-generation-key': process.env.SPYNE_CLI_GENERATOR_KEY}
             : {}),
       },
-      body: JSON.stringify({prompt: sitePrompt}),
+      body: JSON.stringify(generatorRequestBody({sitePrompt, material})),
       signal: AbortSignal.timeout(120000),
     });
     body = await res.json().catch(() => ({}));

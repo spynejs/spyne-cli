@@ -7,9 +7,10 @@ const {promptInputHash} = Data;
 import GeneratePromptInputObject from './templates/generate-prompt-input-object.js';
 import {appCommands, moduleCommands} from './registry.js';
 import {generateModule} from './core/generate-module.js';
-import {createApp, detectSpyneProject} from './core/create-app.js';
+import {createApp, detectSpyneProject, MATERIAL} from './core/create-app.js';
 import {
   appNamePrompt,
+  materialPrompt,
   createProgressReporter,
   renderAppResult,
   renderError,
@@ -94,10 +95,19 @@ export default class SpyneFilePrompt {
     }
 
     // Template first: the general choice before the specific one.
-    const answers = await prompt([templatePrompt(), appNamePrompt()]);
+    const {template} = await prompt(templatePrompt());
+
+    // The shell's follow-up: its own design, or Material Design.
+    const {material} = template === MATERIAL.template
+        ? await prompt(materialPrompt())
+        : {material: false};
+
+    const {appName} = await prompt(appNamePrompt());
 
     const result = await createApp({
-      ...answers,
+      template,
+      material,
+      appName,
       onProgress: createProgressReporter(),
     });
 

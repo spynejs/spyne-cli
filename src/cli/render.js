@@ -5,7 +5,7 @@ import c from 'ansi-colors';
 import ora from 'ora';
 import {generatePromptOutput} from '../templates/generate-prompt-output.js';
 import {commands} from '../registry.js';
-import {TEMPLATES} from '../core/create-app.js';
+import {MATERIAL, TEMPLATES} from '../core/create-app.js';
 
 /**
  * Rebuild the legacy shapes generatePromptOutput expects, so module output is
@@ -37,6 +37,7 @@ export const renderAppResult = (result) => {
     result.generated
         ? `Template: ${result.template} (AI-generated, app id ${result.appId})`
         : `Template: ${result.template}`,
+    ...(result.design === 'material' ? [`Design: ${MATERIAL.label}`] : []),
     ...renderPhotoCredit(result.photos),
     '',
     'Next steps:',
@@ -103,6 +104,15 @@ export const appNamePrompt = () => ({
   initial: 'my-spyne-app',
   validate: (value) => String(value).trim().length > 0 ||
       'An app name is required.',
+});
+
+// The shell template's first follow-up: its own design, or Material Design.
+// Enter keeps the shell's own design.
+export const materialPrompt = () => ({
+  type: 'confirm',
+  name: 'material',
+  message: c.blueBright(`Use ${MATERIAL.label}? (${MATERIAL.description})`),
+  initial: false,
 });
 
 // The default follow-up when the shell template is chosen: describing the

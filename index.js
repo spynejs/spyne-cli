@@ -11,6 +11,7 @@ import {parseArgs, validateArgs} from './src/cli/args.js';
 import {
   appNamePrompt,
   createProgressReporter,
+  materialPrompt,
   renderAppResult,
   renderCommandHelp,
   renderError,
@@ -128,6 +129,11 @@ async function resolveAppArgs() {
   // Template first: the general choice before the specific one.
   if (!provided.has('template')) {
     ({template: args.template} = await prompt(templatePrompt()));
+  }
+
+  // Shell's first follow-up: its own design, or Material Design.
+  if (args.template === 'shell' && !provided.has('material')) {
+    ({material: args.material} = await prompt(materialPrompt()));
   }
 
   // Shell's default follow-up: a site description sends scaffolding through
