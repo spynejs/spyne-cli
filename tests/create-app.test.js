@@ -14,6 +14,7 @@ import {
 } from '../src/core/create-app.js';
 import {
   generatorRequestBody,
+  GENERATOR_WAIT_MS,
   summarizePhotos,
 } from '../src/core/generate-app.js';
 import {parseArgs} from '../src/cli/args.js';
@@ -380,11 +381,22 @@ describe('Material Design, the shell template in another design', () => {
   });
 
   it('should send the generator its design only when asked', () => {
-    // An app in the shell's own design sends what every earlier release sent.
-    expect(generatorRequestBody({sitePrompt: 'a bakery'})).
-        to.eql({prompt: 'a bakery'});
-    expect(generatorRequestBody({sitePrompt: 'a bakery', material: true})).
-        to.eql({prompt: 'a bakery', options: {design: 'material'}});
+    expect(generatorRequestBody({sitePrompt: 'a bakery'}).options).
+        to.not.have.property('design');
+    expect(generatorRequestBody({sitePrompt: 'a bakery', material: true}).
+        options.design).to.equal('material');
+  });
+
+  it('should tell the generator how long it will wait', () => {
+    // The generator ends a generation inside the wait it is told, and takes a
+    // client that says nothing to wait 120 s. So the number sent is the very
+    // one the request is given up at.
+    for (const material of [false, true]) {
+      const body = generatorRequestBody({sitePrompt: 'a bakery', material});
+      expect(body.prompt).to.equal('a bakery');
+      expect(body.options.waitMs).to.equal(GENERATOR_WAIT_MS);
+    }
+    expect(GENERATOR_WAIT_MS).to.be.above(120000);
   });
 
   it('should say which design the app was created in', () => {

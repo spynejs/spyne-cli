@@ -22,7 +22,8 @@ const errorFor = (status, body) => {
     return {
       code: 'GENERATION_INVALID',
       message: 'The generator could not produce a valid site from that ' +
-          'description. Try rephrasing it.',
+          'description. Try again: the same words often work a second ' +
+          'time. If it fails again, try a shorter description.',
     };
   }
   if (status === 429) {
@@ -102,9 +103,22 @@ export const extractPackage = (zipBuffer, targetDir) => {
  * generator reads; a shell app in its own design sends the prompt alone, as
  * every release before this one did.
  */
+/**
+ * How long the generator is waited on, in milliseconds. A generation is the
+ * model's reply, a repair of it where one is needed, and then the
+ * photographs; a large site with a repair takes more than a minute. The
+ * generator is told this number (options.waitMs) and ends a generation
+ * inside it. A client that does not say is taken to wait 120 s, which is
+ * what every release up to 0.8.0 waited.
+ */
+export const GENERATOR_WAIT_MS = 240000;
+
 export const generatorRequestBody = ({sitePrompt, material = false}) => ({
   prompt: sitePrompt,
-  ...(material ? {options: {design: 'material'}} : {}),
+  options: {
+    ...(material ? {design: 'material'} : {}),
+    waitMs: GENERATOR_WAIT_MS,
+  },
 });
 
 /**
@@ -120,7 +134,7 @@ export async function fetchGeneratedApp(
   onProgress({
     step: 'generate',
     status: 'start',
-    message: 'Generating site with AI (this can take up to a minute)...',
+    message: 'Generating site with AI (this can take a minute or two)...',
   });
 
   let res;
@@ -136,7 +150,7 @@ export async function fetchGeneratedApp(
             : {}),
       },
       body: JSON.stringify(generatorRequestBody({sitePrompt, material})),
-      signal: AbortSignal.timeout(120000),
+      signal: AbortSignal.timeout(GENERATOR_WAIT_MS),
     });
     body = await res.json().catch(() => ({}));
   } catch (err) {
