@@ -15,6 +15,7 @@ import {
 import {
   generatorRequestBody,
   GENERATOR_WAIT_MS,
+  errorFor,
   summarizePhotos,
 } from '../src/core/generate-app.js';
 import {parseArgs} from '../src/cli/args.js';
@@ -385,6 +386,25 @@ describe('Material Design, the shell template in another design', () => {
         to.not.have.property('design');
     expect(generatorRequestBody({sitePrompt: 'a bakery', material: true}).
         options.design).to.equal('material');
+  });
+
+  it('should tell the user why a description was refused', () => {
+    const large = errorFor(422, {reason: 'too_large'});
+    expect(large.code).to.equal('GENERATION_INVALID');
+    expect(large.message).to.contain('fewer pages');
+    expect(errorFor(422, {reason: 'not_a_site'}).message).
+        to.contain('description of a website');
+    expect(errorFor(422, {reason: 'timed_out'}).message).
+        to.contain('ran out of time');
+    // A generator that gives no reason, or one not known here, is answered
+    // as an invalid site: try again.
+    for (const body of [{}, undefined, {reason: 'something-new'}]) {
+      const refusal = errorFor(422, body);
+      expect(refusal.reason).to.equal('invalid');
+      expect(refusal.message).to.contain('Try again');
+    }
+    // Other statuses are as they were.
+    expect(errorFor(429, {}).code).to.equal('RATE_LIMITED');
   });
 
   it('should tell the generator how long it will wait', () => {

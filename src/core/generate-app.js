@@ -17,13 +17,32 @@ export const DEFAULT_GENERATOR_URL =
 export const generatorUrl = () =>
     process.env.SPYNE_CLI_GENERATOR_URL || DEFAULT_GENERATOR_URL;
 
-const errorFor = (status, body) => {
+/**
+ * What the user is told when the generator refuses a description, by the
+ * reason the generator gives (body.reason). A generator that gives none, or
+ * one this release does not know, is answered as `invalid`: the same words
+ * usually work on a second try.
+ */
+const REFUSALS = {
+  too_large: 'That is a large site for one generation. Ask for fewer pages ' +
+      'or sections, and add the rest once the app is made.',
+  not_a_site: 'That did not read as a description of a website. Say what ' +
+      'the site is for and what pages it needs.',
+  timed_out: 'The generator ran out of time. Try again; if it fails again, ' +
+      'try a shorter description.',
+  invalid: 'The generator could not produce a valid site from that ' +
+      'description. Try again: the same words often work a second ' +
+      'time. If it fails again, try a shorter description.',
+};
+
+export const errorFor = (status, body) => {
   if (status === 422) {
+    const reason = body && Object.hasOwn(REFUSALS, body.reason) ?
+        body.reason : 'invalid';
     return {
       code: 'GENERATION_INVALID',
-      message: 'The generator could not produce a valid site from that ' +
-          'description. Try again: the same words often work a second ' +
-          'time. If it fails again, try a shorter description.',
+      reason,
+      message: REFUSALS[reason],
     };
   }
   if (status === 429) {
